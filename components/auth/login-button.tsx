@@ -18,7 +18,6 @@ export const LoginButton = ({ children, mode, asChild = false }: LoginButtonProp
     if(mode === "modal") {
         return (
             <span>
-                TODO: Implement modal
             </span>
         );
     }
