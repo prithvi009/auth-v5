@@ -5,7 +5,7 @@ import {useForm} from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 
-import { LoginSchema } from '@/schemas'
+import { RegisterSchema } from '@/schemas'
 import {Input} from '@/components/ui/input'
 import {
     Form, 
@@ -19,24 +19,25 @@ import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/auth/form-error';
 import { FormSuccess } from './form-success';
 
-export const LoginForm = () => {
-    const form = useForm<z.infer<typeof LoginSchema>>({
-        resolver: zodResolver(LoginSchema),
+export const RegisterForm = () => {
+    const form = useForm<z.infer<typeof RegisterSchema>>({
+        resolver: zodResolver(RegisterSchema),
         defaultValues: {
+            name: '',
             email: '',
             password: '',
         }
     });
 
-    const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
         console.log(values);
     }
 
   return (
     <CardWrapper
-        headerLabel="Login"
-        backButtonLabel="Don't have an account? Register here."
-        backButtonHref="/auth/register"
+        headerLabel="Create an account"
+        backButtonLabel="Already have an account? Login here."
+        backButtonHref="/auth/login"
         showSocial
     >
         <Form {...form}>
@@ -44,6 +45,18 @@ export const LoginForm = () => {
                 className="space-y-6"
             >
                 <div>
+                <FormField control={form.control}
+                        name="name"
+                        render={({field})=>(
+                            <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                    <Input {...field} placeholder="Prithviraj" />
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
                     <FormField control={form.control}
                         name="email"
                         render={({field})=>(
@@ -74,7 +87,7 @@ export const LoginForm = () => {
                     type="submit"
                     className='w-full'
                 >
-                    Login
+                    Create an Account
                 </Button>
             </form>
         </Form>
@@ -82,4 +95,4 @@ export const LoginForm = () => {
   )
 }
 
-export default LoginForm
+export default RegisterForm;
