@@ -1,16 +1,11 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import {PrismaClient} from '@prisma/client'
 
 declare global {
-    var sequelize: Sequelize | undefined;
+    var prisma: PrismaClient | undefined;
 }
 
-const db_url = process.env.DATABASE_URL || "";
+export const db = globalThis.prisma || new PrismaClient();
 
-export const db = globalThis.sequelize || new Sequelize(db_url);
-
-if(process.env.NODE_ENV !== "production") {
-    globalThis.sequelize = db;
+if (process.env.NODE_ENV !== 'production') {
+    globalThis.prisma = db;
 }
