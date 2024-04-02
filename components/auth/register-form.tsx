@@ -2,9 +2,11 @@
 
 import { CardWrapper } from '@/components/auth/card-wrapper'
 import {useForm} from 'react-hook-form'
+import { useState, useTransition } from "react";
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 
+import { register } from '@/actions/register'
 import { RegisterSchema } from '@/schemas'
 import {Input} from '@/components/ui/input'
 import {
@@ -19,7 +21,17 @@ import { Button } from '@/components/ui/button';
 import { FormError } from '@/components/auth/form-error';
 import { FormSuccess } from './form-success';
 
+interface RegisterResponse {
+    error?: string; 
+    success?: string;
+  }
+
 export const RegisterForm = () => {
+
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [isPending, startTransition] = useTransition();
+
     const form = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
@@ -30,7 +42,20 @@ export const RegisterForm = () => {
     });
 
     const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-        console.log(values);
+        setError("");
+        setSuccess("");
+
+        startTransition(() => {
+            register(values)
+              .then((data: any) => {
+                if(data.error) {
+                  setError(data.error);
+                } else {
+                  setSuccess(data.success);
+                }
+              });
+        });
+
     }
 
   return (
@@ -82,7 +107,8 @@ export const RegisterForm = () => {
                         )}
                     />
                 </div>
-                <FormSuccess message=''/>
+                <FormError message={error}/>
+                <FormSuccess message={success}/>
                 <Button
                     type="submit"
                     className='w-full'
